@@ -30,3 +30,4 @@
 /home/davirnas/ProjetoTuberculose/backend/obj/Debug/net9.0/backend.pdb
 /home/davirnas/ProjetoTuberculose/backend/obj/Debug/net9.0/backend.genruntimeconfig.cache
 /home/davirnas/ProjetoTuberculose/backend/obj/Debug/net9.0/ref/backend.dll
+/home/davirnas/ProjetoTuberculose/backend/obj/Debug/net9.0/backend.sourcelink.json

@@ -22,3 +22,18 @@ def notificacoes_sindrome_gripal_leve_bar_chart(df, title, x_column):
         },
         text='total_notificacoes'
     )
+
+def casos_confirmados_tuberculose_regiao_estado_ano_bar_chart(df, title):
+    df_sorted = df.sort_values(by='Total', ascending=False)
+    
+    fig = px.bar(
+        df_sorted,
+        x='localidade',
+        y='Total',
+        title=title,
+        labels={'localidade': 'Região/UF', 'Total': 'Total de Casos Confirmados'},
+        text='Total'
+    )
+    
+    fig.update_traces(textposition='outside')
+    return fig 

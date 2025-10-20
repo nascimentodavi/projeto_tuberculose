@@ -1,102 +1,111 @@
 import { useState, useEffect } from 'react';
-import Plot from 'react-plotly.js'
-import type { Data, Layout } from 'plotly.js'
+import Plot from 'react-plotly.js';
+import type { Data, Layout } from 'plotly.js';
 
-const CSHARP_API_BASE_URL= import.meta.env.VITE_CSHARP_API_BASE_URL;
+const CSHARP_API_BASE_URL = import.meta.env.VITE_CSHARP_API_BASE_URL;
 
 interface PlotlyChart {
-    data: Data[];
-    layout: Partial<Layout>;
+  data: Data[];
+  layout: Partial<Layout>;
 }
 
 function CovidNotificacaoSindromGripalLeve() {
+  const [chartData, setChartData] = useState<PlotlyChart | null>(null);
+  
+  const [chartType, setChartType] = useState<'bar' | 'line' | 'pie'>('bar');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-    const [chartData, setChartData] = useState<PlotlyChart | null>(null);
-    const [chartType, setChartType] = useState('bar');
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      setChartData(null);
 
-    useEffect(() => {
-        const fetchChartData = async () => {
-            setLoading(true);
-            setError(null);
-            setChartData(null);
-            try {
-                const apiUrl = `${CSHARP_API_BASE_URL}/charts/notificacoes_sindrome_gripal_leve/${chartType}`;
-                const response = await fetch(apiUrl, {
-                    method: 'GET'
-                });
-                if(!response.ok) {
-                    const errorText = await response.text();
-                    throw  new Error(`Falha na API: ${response.status} - ${errorText}`);
-                }
-                const data: PlotlyChart = await response.json();
-                setChartData(data);
-            } catch(e) {
-                console.error("Erro ao buscar dados do gráfico:", e);
-                if(e instanceof Error) {
-                    setError(e.message);
-                }  else {
-                    setError("Ocorreu um erro desconhecido");
-                }
-            } finally {
-                setLoading(false);
-            }
+      try {
+        const response = await fetch(`${CSHARP_API_BASE_URL}/charts/notificacoes_sindrome_gripal_leve/${chartType}`);
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Falha na API: ${response.status} - ${errorText}`);
         }
-        fetchChartData();
-    }, [chartType]); // Executa a função novamente sempre que chartType for alterado, funcionando como array de dependencia
 
-    return (
-        <div className="bg-slate-900 text-white min-h-screen font-sans">
+        const data: PlotlyChart = await response.json();
+        setChartData(data);
 
-          <header className="text-center p-6 bg-slate-800 shadow-lg">
-            
-            <h1 className="text-3xl font-bold text-sky-400">
-              Dashboard de Ocupação Hospitalar (COVID-19)
-            </h1>
-            
-          </header>
-    
-          <nav className="flex justify-center items-center gap-4 p-4 mt-4">
-            <h2 className="text-lg mr-4">Selecione o tipo de Gráfico:</h2>
-            
-            {/* SELEÇÃO DE TIPO DE GRAFICO */}
-            <button
-              onClick={() => setChartType('bar')}
-              className={`px-4 py-2 rounded-md font-semibold transition-colors ${
-                chartType === 'bar' ? 'bg-sky-500 text-white shadow-md' : 'bg-slate-700 hover:bg-slate-600'
-              }`}
-            >
-              Barras
-            </button>
-          </nav>
-    
-          <main className="container mx-  auto p-4">
+      } catch (e) {
+        console.error(e);
+        setError(e instanceof Error ? e.message : 'Erro desconhecido');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-            <div className="flex justify-center items-center h-[32rem] mt-4">
+    fetchData();
+  }, [chartType]);
 
-              {loading && <p className="text-xl text-gray-400">Carregando gráfico...</p>}
-              
-              {error && <p className="text-xl text-red-400 bg-red-900/50 p-4 rounded-md">Erro: {error}</p>}
-    
-              {chartData && !loading && (
-                <div className="bg-white p-2 rounded-lg shadow-xl w-full h-full">
-                  <Plot
-                    data={chartData.data}
-                    layout={{ ...chartData.layout, autosize: true, paper_bgcolor: 'transparent' }}
-                    style={{ width: '100%', height: '100%' }}
-                    useResizeHandler={true}
-                  />
-                </div>
-              )}
+  return (
+    <div className="container py-4">
+      
+      {/* Header com classes do Bootstrap */}
+      <header className="text-center p-3 mb-4 bg-dark text-white rounded shadow-sm">
+        <h1 className="h4">Notificações de Síndrome Gripal Leve (COVID-19)</h1>
+      </header>
+
+      <div className="d-flex justify-content-center gap-3 mb-4">
+        <button
+          className={`btn btn-outline-info ${chartType === 'bar' ? 'active' : ''}`}
+          onClick={() => setChartType('bar')}
+        >
+          Barras
+        </button>
+        <button
+          className={`btn btn-outline-info ${chartType === 'line' ? 'active' : ''}`}
+          onClick={() => setChartType('line')}
+        >
+          Linha
+        </button>
+
+        <button
+          className={`btn btn-outline-info ${chartType === 'pie' ? 'active' : ''}`}
+          onClick={() => setChartType('pie')}
+        >
+          Pizza
+        </button>
+      </div>
+
+      <div className="card bg-dark text-white shadow" style={{ minHeight: '36rem' }}>
+        <div className="card-body d-flex justify-content-center align-items-center">
+          
+          {loading && (
+            <div className="text-center">
+              <div className="spinner-border text-info" style={{ width: '3rem', height: '3rem' }} />
+              <p className="mt-2">Carregando dados...</p>
             </div>
+          )}
 
-          </main>
+          {error && <div className="alert alert-danger">Erro: {error}</div>}
 
+          {chartData && !loading && !error && (
+            <Plot
+              key={chartType}
+              data={chartData.data}
+              layout={{
+                ...chartData.layout,
+                autosize: true,
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                font: { color: '#f8f9fa' },
+                margin: { l: 60, r: 30, b: 80, t: 60 },
+              }}
+              style={{ width: '100%', height: '100%' }}
+              useResizeHandler
+              config={{ responsive: true, displaylogo: false }}
+            />
+          )}
         </div>
-
-      );
-    
+      </div>
+    </div>
+  );
 }
 
 export default CovidNotificacaoSindromGripalLeve;
