@@ -1,5 +1,9 @@
 /backend/bin/
 /backend/obj
+/python-api/v-env/bin
+/python-api/v-env/lib
+/python-api/v-env/lib64
+/python-api/v-env/share
 
 # OS
 .DS_Store
