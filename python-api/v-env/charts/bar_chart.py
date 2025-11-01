@@ -1,12 +1,16 @@
 import plotly.express as px
 
+# TOTAL DE REGISTROS DE OCUPACAO HOSPITALAR POR UF
 def registro_ocupacao_hospitalar_bar_chart(df, title):
     return px.bar(
         df,
         x='estado',
         y=df.columns[1],
         title=title,
-        labels={'estado': 'Estado', df.columns[1]: 'Total'}
+        labels={
+            'estado': 'Estado',
+            df.columns[1]: 'Total'
+        }
     )
 
 def notificacoes_sindrome_gripal_leve_bar_chart(df, title, x_column):

@@ -1,5 +1,3 @@
-// FUNCIONA COMO UM PROXY (PONTE)
-
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
@@ -7,17 +5,19 @@ using Microsoft.AspNetCore.Mvc;
 public class ChartsController : ControllerBase
 {
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly string _pythonServiceBaseUrl;
 
-    public ChartsController(IHttpClientFactory httpClientFactory)
+    public ChartsController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
     {
         _httpClientFactory = httpClientFactory;
+        _pythonServiceBaseUrl = configuration.GetValue<string>("PythonService:BaseUrl");
     }
 
     [HttpGet("{theme}/{chartType}")]
     public async Task<IActionResult> CovidGetChartData(string theme, string chartType)
     {
         // MICROSERVICO PYTHON
-        var chartServiceUrl = $"http://localhost:5001/generate-chart/covid/{theme}/{chartType}";
+        var chartServiceUrl = $"{_pythonServiceBaseUrl}/generate-chart/covid/{theme}/{chartType}";
 
         var client = _httpClientFactory.CreateClient();
 
@@ -39,10 +39,12 @@ public class ChartsController : ControllerBase
         }
     }
 
+
+    // TUBERCULOSE
     [HttpGet("tuberculose/{theme}")]
     public async Task<IActionResult> TuberculoseGetChartData(string theme)
     {
-        var chartServiceUrl = $"http://localhost:5001/generate-chart/tuberculose/{theme}";
+        var chartServiceUrl = $"{_pythonServiceBaseUrl}/generate-chart/tuberculose/{theme}";
 
         var client = _httpClientFactory.CreateClient();
 
@@ -68,7 +70,7 @@ public class ChartsController : ControllerBase
     public async Task<IActionResult> ExplainData([FromBody] object payload)
     {
         var client = _httpClientFactory.CreateClient();
-        var pythonServiceUrl = "http://localhost:5001/llm/explain";
+        var pythonServiceUrl = $"{_pythonServiceBaseUrl}/llm/explain";
 
         try
         {

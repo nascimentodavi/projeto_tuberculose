@@ -10,20 +10,23 @@ interface PlotlyChart {
 }
 
 function CovidNotificacaoSindromGripalLeve() {
-  const [chartData, setChartData] = useState<PlotlyChart | null>(null);
   
+  const [chartData, setChartData] = useState<PlotlyChart | null>(null);
   const [chartType, setChartType] = useState<'bar' | 'line' | 'pie'>('bar');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    
     const fetchData = async () => {
       setLoading(true);
       setError(null);
       setChartData(null);
 
       try {
+        
         const response = await fetch(`${CSHARP_API_BASE_URL}/charts/notificacoes_sindrome_gripal_leve/${chartType}`);
+        
         if (!response.ok) {
           const errorText = await response.text();
           throw new Error(`Falha na API: ${response.status} - ${errorText}`);

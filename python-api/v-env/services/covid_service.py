@@ -12,6 +12,8 @@ def registro_ocupacao_hospitalar_covid19():
     response.raise_for_status()
 
     data = response.json()
+
+    # Encapsula dados dentro da array
     registros = data.get("registro_ocupacao_hospitalar_covid19", [])
 
     if not registros:
@@ -19,7 +21,7 @@ def registro_ocupacao_hospitalar_covid19():
     
     df = pd.DataFrame(registros)
     df['ocupacaoconfirmadouti'] = pd.to_numeric(df['ocupacaoconfirmadouti'], errors='coerce').fillna(0)
-    df = df.groupby('estado')['ocupacaoconfirmadouti'].sum().reset_index()
+    df = df.groupby('estado')['ocupacaoconfirmadouti'].sum().reset_index() # Transforma o indice (estado) em uma coluna normal novamente ao dataframe
 
     return df
 

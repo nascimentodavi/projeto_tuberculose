@@ -23,6 +23,7 @@ function CovidOcupacaoHospitalar() {
 
       try {
         const response = await fetch(`${CSHARP_API_BASE_URL}/charts/registro_ocupacao_hospitalar/${chartType}`);
+
         if (!response.ok) {
           const errorText = await response.text();
           throw new Error(`Falha na API: ${response.status} - ${errorText}`);
@@ -45,27 +46,34 @@ function CovidOcupacaoHospitalar() {
   return (
     <div className="container py-4">
       <header className="text-center p-3 mb-4 bg-dark text-white rounded shadow-sm">
-        <h1 className="h4">Dashboard de Ocupação Hospitalar (COVID-19)</h1>
+        <h1 className="h4">Dashboard de Ocupação Hospitalar (COVID-19) em 2021</h1>
       </header>
 
       <div className="d-flex justify-content-center gap-3 mb-4">
+
+        {/* GRAFICO DE BARRAS */}
         <button
           className={`btn btn-outline-info ${chartType === 'bar' ? 'active' : ''}`}
           onClick={() => setChartType('bar')}
         >
           Barras
         </button>
+        
+        {/* GRAFICO DE LINHAS */}
         <button
           className={`btn btn-outline-info ${chartType === 'line' ? 'active' : ''}`}
           onClick={() => setChartType('line')}
         >
           Linha
         </button>
+        
       </div>
 
       {/* Gráfico */}
       <div className="card bg-dark text-white shadow" style={{ minHeight: '36rem' }}>
+
         <div className="card-body d-flex justify-content-center align-items-center">
+
           {loading && (
             <div className="text-center">
               <div className="spinner-border text-info" style={{ width: '3rem', height: '3rem' }} />
@@ -85,9 +93,17 @@ function CovidOcupacaoHospitalar() {
                 paper_bgcolor: 'transparent',
                 plot_bgcolor: 'transparent',
                 font: { color: '#f8f9fa' },
-                margin: { l: 60, r: 30, b: 80, t: 60 },
+                margin: {
+                  l: 60,
+                  r: 30,
+                  b: 80,
+                  t: 60
+                },
               }}
-              style={{ width: '100%', height: '100%' }}
+              style={{
+                width: '100%',
+                height: '100%'
+              }}
               useResizeHandler
               config={{ responsive: true, displaylogo: false }}
             />

@@ -241,15 +241,21 @@ function TuberculoseCasosConfirmadosRegiaoEstadoAno() {
   };
 
   return (
+
     <div className="container py-4">
+      
+        {/* TITULO */}
       <header className="text-center p-3 mb-4 bg-dark text-white rounded shadow-sm">
         <h1 className="h4">Dashboard Interativo de Casos de Tuberculose</h1>
       </header>
+      
 
       {/* FILTROS */}
       <div className="accordion" id="accordionFilters">
         <div className="accordion-item bg-dark text-white border-secondary">
           <h2 className="accordion-header">
+
+            {/* ACCORDION BUTTON */}
             <button
               className="accordion-button bg-dark text-white"
               type="button"
@@ -258,16 +264,20 @@ function TuberculoseCasosConfirmadosRegiaoEstadoAno() {
             >
               Filtros
             </button>
+            
           </h2>
+
           <div
             id="collapseFilters"
             className="accordion-collapse collapse show"
             data-bs-parent="#accordionFilters"
           >
             <div className="accordion-body">
+              
               {/* === FILTROS EXISTENTES === */}
               <div className="row g-3 align-items-end">
                 <div className="col-md-6">
+                  
                   <label className="form-label">Região</label>
                   <select
                     className="form-select"
@@ -283,6 +293,7 @@ function TuberculoseCasosConfirmadosRegiaoEstadoAno() {
                         {r}
                       </option>
                     ))}
+                    
                   </select>
                 </div>
                 <div className="col-md-6">

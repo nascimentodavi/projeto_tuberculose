@@ -6,8 +6,11 @@ from dotenv import load_dotenv
 import os
 
 from services.covid_service import registro_ocupacao_hospitalar_covid19
+
 from services.covid_service import notificacoes_sindrome_gripal_leve
+
 from services.tuberculose_service import casos_confirmados_tuberculose_regiao_estado_ano
+
 from charts.bar_chart import *
 
 load_dotenv()
@@ -16,11 +19,10 @@ client = genai.Client(api_key=os.getenv("GENAI_API_KEY"))
 
 app = FastAPI()
 
+# COVID
 @app.get("/generate-chart/covid/{theme}/{chart_type}")
 async def generate_chart(chart_type: str, theme: str = "default", x_column: Optional[str] = 'estado'):
     try:
-
-        # TIPO DE INFORMACAO
 
         # REGISTRO DE OCUPAÇÃO HOSPITALAR POR COVID-19
         if theme == "registro_ocupacao_hospitalar":
@@ -46,6 +48,7 @@ async def generate_chart(chart_type: str, theme: str = "default", x_column: Opti
     except Exception as e:
         return Response(content=f'{{"error": "{str(e)}"}}', media_type="application/json", status_code=500)
     
+# TUBERCULOSE
 @app.get("/generate-chart/tuberculose/{theme}")
 async def generate_chart(theme: str = "default"):
     try:
